@@ -94,7 +94,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/your-username/ChroneJobUpdate</url>
+            <url>https://maven.pkg.github.com/sanketkhandekar/ChroneJobUpdate</url>
         </pluginRepository>
     </pluginRepositories>
 
