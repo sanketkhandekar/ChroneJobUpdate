@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -28,5 +27,9 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Run UpdateNumberQuartz
-      run: java -jar target/update-number-1.0-SNAPSHOT.jar
+    - name: Verify and Run JAR
+      run: |
+        echo "Listing JAR contents..."
+        jar tf target/update-number-1.0-SNAPSHOT.jar
+        echo "Running the JAR file..."
+        java -jar target/update-number-1.0-SNAPSHOT.jar
