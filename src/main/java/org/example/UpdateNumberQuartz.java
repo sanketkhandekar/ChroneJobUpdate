@@ -95,11 +95,11 @@ public class UpdateNumberQuartz {
 
     // Add the file to the staging area
     ProcessBuilder builder = new ProcessBuilder("git", "add", NUMBER_FILE);
-    builder.directory(new File("/path/to/your/repository")); // Set Git repository root
-    runProcess(builder);
+   
 
     // Generate a commit message with the current date
-    String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+   String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm-ss"));
+
     String commitMessage = "Update number: " + date;
 
     // Commit the changes
