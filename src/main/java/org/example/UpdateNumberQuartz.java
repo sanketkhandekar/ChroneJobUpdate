@@ -39,10 +39,14 @@ public class UpdateNumberQuartz {
 
     // Generates a random cron expression for a random time each day
     private static String getRandomCronExpression() {
+
+        return "0 0 0/1 * * ?";
+        /*
         Random random = new Random();
         int randomHour = random.nextInt(24); // 0-23 hours
         int randomMinute = random.nextInt(60); // 0-59 minutes
         return String.format("%d %d * * * ?", randomMinute, randomHour);
+        */
     }
 
     // Job class that updates the number and performs Git operations
