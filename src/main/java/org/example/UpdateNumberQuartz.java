@@ -79,15 +79,35 @@ public class UpdateNumberQuartz {
         }
 
         private static void gitCommit() throws IOException, InterruptedException {
-            ProcessBuilder builder = new ProcessBuilder("git", "add", NUMBER_FILE);
-            runProcess(builder);
+         
+    // Configure Git username and email
+    ProcessBuilder configName = new ProcessBuilder("git", "config", "--global", "user.name", "github-actions[bot]");
+    runProcess(configName);
 
-            String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String commitMessage = "Update number: " + date;
+    ProcessBuilder configEmail = new ProcessBuilder("git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com");
+    runProcess(configEmail);
 
-            builder = new ProcessBuilder("git", "commit", "-m", commitMessage);
-            runProcess(builder);
-        }
+    // Ensure the file exists
+    File file = new File(NUMBER_FILE);
+    if (!file.exists()) {
+        throw new IOException("File to commit does not exist: " + NUMBER_FILE);
+    }
+
+    // Add the file to the staging area
+    ProcessBuilder builder = new ProcessBuilder("git", "add", NUMBER_FILE);
+    builder.directory(new File("/path/to/your/repository")); // Set Git repository root
+    runProcess(builder);
+
+    // Generate a commit message with the current date
+    String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    String commitMessage = "Update number: " + date;
+
+    // Commit the changes
+    builder = new ProcessBuilder("git", "commit", "-m", commitMessage);
+   builder.directory(new File(System.getProperty("user.dir")));
+    runProcess(builder);
+}
+        
 
         private static void gitPush() throws IOException, InterruptedException {
     // Configure Git username and email
