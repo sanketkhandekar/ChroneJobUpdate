@@ -89,27 +89,49 @@ public class UpdateNumberQuartz {
         }
 
         private static void gitPush() throws IOException, InterruptedException {
-            ProcessBuilder builder = new ProcessBuilder("git", "push");
-            Process process = builder.start();
+    // Configure Git username and email
+    ProcessBuilder configUserBuilder = new ProcessBuilder("git", "config", "--global", "user.name", "github-actions[bot]");
+    ProcessBuilder configEmailBuilder = new ProcessBuilder("git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com");
+    
+    // Run the git config commands
+    configUserBuilder.start().waitFor();
+    configEmailBuilder.start().waitFor();
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                 BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
+    // Set the GitHub token for authentication
+    String githubToken = System.getenv("GITHUB_TOKEN"); // GitHub Actions automatically sets this
+    if (githubToken == null || githubToken.isEmpty()) {
+        throw new IllegalStateException("GITHUB_TOKEN environment variable is not set.");
+    }
 
-                int exitCode = process.waitFor();
-                if (exitCode != 0) {
-                    System.err.println("Error pushing to GitHub:");
-                    while ((line = errorReader.readLine()) != null) {
-                        System.err.println(line);
-                    }
-                } else {
-                    System.out.println("Changes pushed to GitHub successfully.");
-                }
-            }
+    // Add authentication to the origin URL
+    ProcessBuilder addAuthBuilder = new ProcessBuilder(
+        "git", "remote", "set-url", "origin",
+        String.format("https://x-access-token:%s@github.com/sanketkhandekar/ChroneJobUpdate.git", githubToken)
+    );
+    addAuthBuilder.start().waitFor();
+
+    // Run the git push command
+    ProcessBuilder pushBuilder = new ProcessBuilder("git", "push");
+    Process process = pushBuilder.start();
+
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+         BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
         }
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            System.err.println("Error pushing to GitHub:");
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println(line);
+            }
+        } else {
+            System.out.println("Changes pushed to GitHub successfully.");
+        }
+    }
+}
 
         private static void runProcess(ProcessBuilder builder) throws IOException, InterruptedException {
             Process process = builder.start();
