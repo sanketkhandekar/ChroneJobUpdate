@@ -40,7 +40,8 @@ public class UpdateNumberQuartz {
     // Generates a random cron expression for a random time each day
     private static String getRandomCronExpression() {
 
-        return "0 0 0/1 * * ?";
+        return "0 */10 * * * ?";
+
         /*
         Random random = new Random();
         int randomHour = random.nextInt(24); // 0-23 hours
